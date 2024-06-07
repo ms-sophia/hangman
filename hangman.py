@@ -61,7 +61,7 @@ def askCategory(name="PlayerOne"):
         # get db for animals
         print("You choose Animals")
     elif category == "2":
-        # get db for things
+        # get db for things and stuff
         print("You choose Things")
     else:
         # get db for places
