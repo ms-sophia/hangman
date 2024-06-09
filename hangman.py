@@ -50,75 +50,6 @@ Places = ["びゅおいん", "こんびに", "でぱと"]
 MissingWord = []
 
 
-def displayHangman():
-    headPart = ["---------", "| ＞﹏＜ |", "---------"]
-    bodyPart = ["|", "/", "\\"]
-
-    #  head
-    for i in headPart:
-        print(i)
-
-    # upper body
-    n = 2
-    m = 0
-    a = 0
-    while a < 3:
-        print(f" {" " * n}{bodyPart[1]}{" "*m}{bodyPart[0]}{" " * m}{bodyPart[2]}")
-        n = n - 1
-        m = m + 1
-        a = a + 1
-
-    # bottom half
-    a = 0
-    while a < 3:
-        print(f"    {bodyPart[0]}")
-        a = a + 1
-
-    # legs
-    a = 0
-    m = 1
-    n = 2
-    while a < 3:
-        print(f" {" " * n }{bodyPart[1]}{" "*m}{bodyPart[2]}")
-        n = n - 1
-        m = m + 2
-        a = a + 1
-
-
-def menu(name="PlayerOne"):
-    while True:
-        # name = input("What is is your name?: ")
-        print(f"Welcome {name} to Hangman!!!\n")
-        word, topic = askCategory(name)
-        # hangMan(word)
-        displayHangman(topic, word)  # TODO: add lives here
-        os.system("pause")
-        os.system("cls")
-
-
-def hangMan(word):
-    lenWord = len(word)
-    for i in word:
-        MissingWord.append(i)
-    print(f"This is: {MissingWord}")
-    print(lenWord)
-    # ! Should initialize at the end of the game kasi when not it add and adds
-    MissingWord.clear()
-
-
-def displayHangman(topic, word):
-    print("/******************************************************************/")
-    lives = 5
-    print(f"\t LIVES:{lives}")
-    print(f"\t TOPIC:{topic}")
-    print("\t Guess the word:")
-    for i in range(len(word)):
-        print("\t __", end=" ")
-    print("\n")
-
-    # print(f"\t GUESS THE WORD:{word}")
-
-
 def askCategory(name="PlayerOne"):
     print("Categories:\n [1]Animals\n [2]Things\n [3]Places\n")
     category = input(f"{name}, choose a category:")
@@ -158,6 +89,151 @@ def checkFormat(format, userInput):
             sys.exit()
 
 
-# def mainGame():
+def drawHead(status):
+    headPart = ["---------", "| ＞﹏＜ |", "---------"]
+    if status == "d":
+        # remove head
+        headPart.clear
+    else:
+        for i in headPart:
+            print(f"\t {i}")
 
-# menu()
+
+def drawBodyParts(status):
+    # index 0 : body
+    # index 1 : left arm
+    # index 2 : right arm
+    # index 3 : left leg
+    # index 4 : right leg
+
+    bodyPart = ["|", "*", "*", "*", "*"]
+
+    n = 2
+    m = 0
+    a = 0
+    if status == 1:  # left leg
+        drawHead("a")
+        bodyPart.insert(3, " ")
+    elif status == 2:  # right leg
+        drawHead("a")
+        bodyPart.insert(3, " ")
+        bodyPart.insert(4, " ")
+    elif status == 3:  # left arm
+        drawHead("a")
+        bodyPart.insert(3, " ")
+        bodyPart.insert(4, " ")
+        bodyPart.insert(1, " ")
+    elif status == 4:  # right arm
+        drawHead("a")
+        bodyPart.insert(3, " ")
+        bodyPart.insert(4, " ")
+        bodyPart.insert(1, " ")
+        bodyPart.insert(2, " ")
+    elif status == 5:  # body
+        drawHead("a")
+        bodyPart.insert(3, " ")
+        bodyPart.insert(4, " ")
+        bodyPart.insert(1, " ")
+        bodyPart.insert(2, " ")
+        bodyPart.insert(0, " ")
+
+    # upper body
+    while a < 3:
+        print(f"\t  {" " * n}{bodyPart[1]}{" "*m}{bodyPart[0]}{" " * m}{bodyPart[2]}")
+        n = n - 1
+        m = m + 1
+        a = a + 1
+    # lower body
+    a = 0
+    while a < 3:
+        print(f"\t     {bodyPart[0]}")
+        a = a + 1
+    # legs
+    a = 0
+    m = 1
+    n = 2
+    while a < 3:
+        print(f"\t  {" " * n }{bodyPart[3]}{" "*m}{bodyPart[4]}")
+        n = n - 1
+        m = m + 2
+        a = a + 1
+
+
+def drawingHangman(choice, part):
+    # pole
+    print("--------------")
+    print("\t     |\n\t     |\n\t     |")
+
+    if choice == "remove":
+        if part == 1:
+            drawBodyParts(1)  # remove left leg
+        elif part == 2:
+            drawBodyParts(2)  # remove right leg
+        elif part == 3:
+            drawBodyParts(3)  # remove left arm
+        elif part == 4:
+            drawBodyParts(4)  # remove right arm
+        elif part == 5:
+            drawBodyParts(5)  # remove body
+        elif part == 6:
+            drawHead("d")
+    else:
+        # show all
+        drawHead(0)
+        drawBodyParts(0)
+
+    print("\n\n----------------------")
+
+    # /\must save the last current status of hangman
+
+
+def displayLives(lives):
+    print("LIVES:", end=" ")
+    if lives == 5:
+        print("💜💜💜💜💜")
+    elif lives == 4:
+        print("💜💜💜💜")
+    elif lives == 3:
+        print("💜💜💜")
+    elif lives == 2:
+        print("💜💜💜")
+    elif lives == 1:
+        print("💜")
+    else:
+        print("No More Lives 💀")
+
+
+def displayHangman(topic, word):
+    print("/******************************************************************/")
+    displayLives(5)
+    print(f"TOPIC:{topic}")
+    print(f"Guess the word (Number of letter:{len(word)}):", end=" ")
+    for i in range(len(word)):
+        print("__", end=" ")
+    print("\n")
+    drawingHangman("remove", 2)
+
+
+def hangMan(word):
+    lenWord = len(word)
+    for i in word:
+        MissingWord.append(i)
+    print(f"This is: {MissingWord}")
+    print(lenWord)
+    # ! Should initialize at the end of the game kasi when not it add and adds
+    MissingWord.clear()
+
+
+def menu(name="PlayerOne"):
+    while True:
+        # name = input("What is is your name?: ")
+        print(f"Welcome {name} to Hangman!!!\n")
+        word, topic = askCategory(name)
+        hangMan(word)
+        displayHangman(topic, word)  # TODO: add lives here
+        os.system("pause")
+        os.system("cls")
+
+
+menu()
+# drawingHangman()
