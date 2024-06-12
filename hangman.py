@@ -47,6 +47,64 @@ import sys, random, os
 Animals = ["ねこ", "いぬ", "とり", "さかな"]
 Things = ["いつ", "つくえ", "かばん", "ほん"]
 Places = ["びゅおいん", "こんびに", "でぱと"]
+Hiragana = [
+    "あ",
+    "か",
+    "さ",
+    "た",
+    "な",
+    "は",
+    "ま",
+    "や",
+    "ら",
+    "わ",
+    "ん",
+    "が",
+    "ざ",
+    "だ",
+    "ば",
+    "ぱ",
+    "い",
+    "き",
+    "し",
+    "ち",
+    "ひ",
+    "み",
+    "り",
+    "ぎ",
+    "じ",
+    "dzi",
+    "び",
+    "ぴ",
+    "え",
+    "け",
+    "せ",
+    "て",
+    "ね",
+    "へ",
+    "め",
+    "れ",
+    "げ",
+    "ぜ",
+    "で",
+    "べ",
+    "ぺ",
+    "お",
+    "こ",
+    "そ",
+    "と",
+    "の",
+    "ほ",
+    "も",
+    "よ",
+    "ろ",
+    "を",
+    "ご",
+    "ぞ",
+    "ど",
+    "ぼ",
+    "ぽ",
+]
 MissingWord = []
 
 
@@ -89,55 +147,60 @@ def checkFormat(format, userInput):
             sys.exit()
 
 
-def drawHead(status):
+def drawHead(status="a"):
     headPart = ["---------", "| ＞﹏＜ |", "---------"]
     if status == "d":
         # remove head
-        headPart.clear
-    else:
-        for i in headPart:
-            print(f"\t {i}")
+        headPart = []
+
+    for i in headPart:
+        print(f"\t {i}")
 
 
-def drawBodyParts(status):
-    # index 0 : body
-    # index 1 : left arm
-    # index 2 : right arm
-    # index 3 : left leg
-    # index 4 : right leg
-
+def drawingHangman(choice, status):
     bodyPart = ["|", "*", "*", "*", "*"]
 
+    # pole
+    print("--------------")
+    print("\t     |\n\t     |\n\t     |")
+
+    if choice == "remove":
+        if status == 5:  # left leg
+            bodyPart[3] = " "
+        elif status == 4:  # right leg
+            bodyPart[3] = " "
+            bodyPart[4] = " "
+        elif status == 3:  # left arm
+            bodyPart[3] = " "
+            bodyPart[4] = " "
+            bodyPart[1] = " "
+        elif status == 2:  # right arm
+            bodyPart[3] = " "
+            bodyPart[4] = " "
+            bodyPart[1] = " "
+            bodyPart[2] = " "
+        elif status == 1:  # body
+            bodyPart[3] = " "
+            bodyPart[4] = " "
+            bodyPart[1] = " "
+            bodyPart[2] = " "
+            bodyPart[0] = " "
+        elif status == 0:
+            bodyPart[3] = " "
+            bodyPart[4] = " "
+            bodyPart[1] = " "
+            bodyPart[2] = " "
+            bodyPart[0] = " "
+
+    # upper body
     n = 2
     m = 0
     a = 0
-    if status == 1:  # left leg
-        drawHead("a")
-        bodyPart.insert(3, " ")
-    elif status == 2:  # right leg
-        drawHead("a")
-        bodyPart.insert(3, " ")
-        bodyPart.insert(4, " ")
-    elif status == 3:  # left arm
-        drawHead("a")
-        bodyPart.insert(3, " ")
-        bodyPart.insert(4, " ")
-        bodyPart.insert(1, " ")
-    elif status == 4:  # right arm
-        drawHead("a")
-        bodyPart.insert(3, " ")
-        bodyPart.insert(4, " ")
-        bodyPart.insert(1, " ")
-        bodyPart.insert(2, " ")
-    elif status == 5:  # body
-        drawHead("a")
-        bodyPart.insert(3, " ")
-        bodyPart.insert(4, " ")
-        bodyPart.insert(1, " ")
-        bodyPart.insert(2, " ")
-        bodyPart.insert(0, " ")
+    if status == 0:
+        drawHead("d")
+    else:
+        drawHead()
 
-    # upper body
     while a < 3:
         print(f"\t  {" " * n}{bodyPart[1]}{" "*m}{bodyPart[0]}{" " * m}{bodyPart[2]}")
         n = n - 1
@@ -157,71 +220,70 @@ def drawBodyParts(status):
         n = n - 1
         m = m + 2
         a = a + 1
-
-
-def drawingHangman(choice, part):
-    # pole
-    print("--------------")
-    print("\t     |\n\t     |\n\t     |")
-
-    if choice == "remove":
-        if part == 1:
-            drawBodyParts(1)  # remove left leg
-        elif part == 2:
-            drawBodyParts(2)  # remove right leg
-        elif part == 3:
-            drawBodyParts(3)  # remove left arm
-        elif part == 4:
-            drawBodyParts(4)  # remove right arm
-        elif part == 5:
-            drawBodyParts(5)  # remove body
-        elif part == 6:
-            drawHead("d")
-    else:
-        # show all
-        drawHead(0)
-        drawBodyParts(0)
-
     print("\n\n----------------------")
-
-    # /\must save the last current status of hangman
 
 
 def displayLives(lives):
     print("LIVES:", end=" ")
-    if lives == 5:
-        print("💜💜💜💜💜")
-    elif lives == 4:
-        print("💜💜💜💜")
-    elif lives == 3:
-        print("💜💜💜")
-    elif lives == 2:
-        print("💜💜💜")
-    elif lives == 1:
-        print("💜")
-    else:
+    if lives == 0:
         print("No More Lives 💀")
+    print(lives * "💜")
 
 
-def displayHangman(topic, word):
-    print("/******************************************************************/")
-    displayLives(5)
+def displayGame(topic, word):
     print(f"TOPIC:{topic}")
     print(f"Guess the word (Number of letter:{len(word)}):", end=" ")
     for i in range(len(word)):
         print("__", end=" ")
     print("\n")
-    drawingHangman("remove", 2)
 
 
-def hangMan(word):
+def hangman(word, topic):
     lenWord = len(word)
     for i in word:
         MissingWord.append(i)
-    print(f"This is: {MissingWord}")
-    print(lenWord)
-    # ! Should initialize at the end of the game kasi when not it add and adds
-    MissingWord.clear()
+    # print(f"This is: {MissingWord}")
+    cntLetter = 0
+    cntWrong = 6
+    cntCorrect = 0
+    while cntLetter < lenWord:
+        displayGame(topic, word)
+        # print(f"This is: {MissingWord}")
+        if cntWrong <= 0:
+            print("You exceeded 6 lives")
+            displayLives(0)
+            drawingHangman("remove", 0)
+            os.system("pause")
+            MissingWord.clear()
+            break
+
+        if cntWrong < 6:
+            displayLives(cntWrong)
+            drawingHangman("remove", cntWrong)
+        else:
+            displayLives(cntWrong)
+            drawingHangman("add", "none")
+
+        for i in Hiragana:
+            print(i, end="  ")
+
+        cmpLetter = input("\n\nEnter letter:")
+
+        for index, element in enumerate(MissingWord):
+            if cmpLetter == element:
+                print("Found correct letter")
+                MissingWord[index] = " "
+                cntLetter += 1
+
+        if cntCorrect > 0:
+            cntCorrect = 0
+        else:
+            cntWrong -= 1
+
+        for index, element in enumerate(Hiragana):
+            if element == cmpLetter:
+                Hiragana[index] = "x"
+                break
 
 
 def menu(name="PlayerOne"):
@@ -229,10 +291,9 @@ def menu(name="PlayerOne"):
         # name = input("What is is your name?: ")
         print(f"Welcome {name} to Hangman!!!\n")
         word, topic = askCategory(name)
-        hangMan(word)
-        displayHangman(topic, word)  # TODO: add lives here
-        os.system("pause")
-        os.system("cls")
+        hangman(word, topic)
+        # os.system("pause")
+        # os.system("cls")
 
 
 menu()
