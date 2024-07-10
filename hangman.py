@@ -163,7 +163,7 @@ def drawingHangman(choice, status):
     # pole
     print("--------------")
     print("\t     |\n\t     |\n\t     |")
-
+    # *THIS COULD BE IMPROVED USE LOOP instead of brute force
     if choice == "remove":
         if status == 5:  # left leg
             bodyPart[3] = " "
@@ -230,25 +230,34 @@ def displayLives(lives):
     print(lives * "💜")
 
 
-def displayGame(topic, word):
+def displayGame(topic, word, MissingWord):
     print(f"TOPIC:{topic}")
     print(f"Guess the word (Number of letter:{len(word)}):", end=" ")
-    for i in range(len(word)):
-        print("__", end=" ")
-    print("\n")
+    if not MissingWord:
+        for i in range(len(word)):
+            print("__", end=" ")
+        print("\n")
+    else:
+        for i in range(len(word)):
+            if not MissingWord:
+                print("_", end=" ")
+            else:
+                print(i)
+
+        print("\n")
 
 
 def hangman(word, topic):
     lenWord = len(word)
-    for i in word:
-        MissingWord.append(i)
-    # print(f"This is: {MissingWord}")
     cntLetter = 0
     cntWrong = 6
     cntCorrect = 0
-    while cntLetter < lenWord:
-        displayGame(topic, word)
+
+    while True:
+        displayGame(topic, word, MissingWord)
         # print(f"This is: {MissingWord}")
+        if cntLetter == lenWord:
+            break
         if cntWrong <= 0:
             print("You exceeded 6 lives")
             displayLives(0)
@@ -269,11 +278,12 @@ def hangman(word, topic):
 
         cmpLetter = input("\n\nEnter letter:")
 
-        for index, element in enumerate(MissingWord):
+        for index, element in enumerate(word):
             if cmpLetter == element:
                 print("Found correct letter")
-                MissingWord[index] = " "
+                MissingWord.insert(index, element)
                 cntLetter += 1
+                cntCorrect += 1
 
         if cntCorrect > 0:
             cntCorrect = 0
@@ -296,5 +306,5 @@ def menu(name="PlayerOne"):
         # os.system("cls")
 
 
-menu()
-# drawingHangman()
+if __name__ == "__main__":
+    menu()
